@@ -10,7 +10,7 @@ def introduction_code(datafile):
     return(
         """\
         import modules.regression as regression
-        import modules.introduction as introduction
+        import modules.introduction as introductionA
 
         import numpy as np
         import pandas as pd
@@ -19,7 +19,7 @@ def introduction_code(datafile):
         path_to_data = os.path.join(reldir, 'data', '{}')
         data = pd.read_csv(path_to_data)
 
-        test = introduction.intro(data, "simpleplot")
+        test = introductionA.intro(data, "simpleplot")
         test.plot
         """.format(datafile)
         )

@@ -14,7 +14,7 @@ nb = nbf.v4.new_notebook()
 #Combine jupyter notebook text and code cells
 nb['cells'] = [
                nbf.v4.new_markdown_cell(Jup.introduction_text), nbf.v4.new_code_cell(Jup.introduction_code(datafile)),
-               nbf.v4.new_markdown_cell(Jup.regression_text), nbf.v4.new_code_cell(Jup.regression_code(datafile)),
+               nbf.v4.new_markdown_cell(Jup.regression_text), nbf.v4.new_code_cell(Jup.regression_code),
                ]
 
 #New folder with a unique name

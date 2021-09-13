@@ -19,5 +19,4 @@ class Regression:
             #self.cluster = self.hierarchical_()
         else:
             print("Regression method "+self.method+" Not Available")
-    #def linear_(self):
 
