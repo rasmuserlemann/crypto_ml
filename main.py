@@ -14,7 +14,7 @@ nb = nbf.v4.new_notebook()
 #Combine jupyter notebook text and code cells
 nb['cells'] = [
                nbf.v4.new_markdown_cell(Jup.introduction_text), nbf.v4.new_code_cell(Jup.introduction_code(datafile)),
-               nbf.v4.new_markdown_cell(Jup.regression_text), nbf.v4.new_code_cell(Jup.regression_code),
+               nbf.v4.new_markdown_cell(Jup.regression_text), nbf.v4.new_code_cell(Jup.regression_code)
                ]
 
 #New folder with a unique name
@@ -24,15 +24,15 @@ os.mkdir(folder_name)
 #Make src folder and copy the python files
 os.mkdir(folder_name + '/src')
 os.mkdir(folder_name + '/src/modules')
-os.system('cp modules/introduction.py ' + folder_name + '/src/modules')
-os.system('cp modules/regression.py ' + folder_name + '/src/modules')
+os.system('cp -r modules/introduction.py ' + folder_name + '/src/modules')
+os.system('cp -r modules/regression.py ' + folder_name + '/src/modules')
 
 os.mkdir(folder_name + '/results')
 os.mkdir(folder_name + '/data')
 
 
 #Copy the data
-os.system('cp data ' + folder_name + '/data')
+os.system('cp -r data ' + folder_name + '/data')
 with open(folder_name + '/src/report.ipynb', 'w') as f:
     nbf.write(nb, f)
 
