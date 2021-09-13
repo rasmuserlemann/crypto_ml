@@ -8,7 +8,7 @@
 %===============================================================================
 
 ((* block docclass *))
-\documentclass[10pt,notitlepage,onecolumn,aps,pra]{revtex4-1}
+\documentclass[10pt,notitlepage,onecolumn,aps,pra]{report}
 ((* endblock docclass *))
 
 %===============================================================================
