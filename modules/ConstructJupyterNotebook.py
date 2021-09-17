@@ -3,31 +3,38 @@ import os
 import sys
 
 introduction_text = """\
-## blabla
+## Introduction
 """
 
-def introduction_code(datafile):
+def introduction_code(crypto, timeint, from_, to):
     return(
         """\
         import modules.regression as regression
         import modules.introduction as introductionA
-
+        import modules.dataload as dataload
         import numpy as np
         import pandas as pd
         import os
-        reldir = os.getcwd()
-        path_to_data = os.path.join(reldir, 'data', '{}')
-        data = pd.read_csv(path_to_data)
 
-        test = introductionA.intro(data, "simpleplot")
+        crypto = {}
+        timeint = {}
+        from_ = {}
+        to = {}
+
+        getdata = dataload.data(crypto, timeint, from_, to, "simpledata")
+        data = getdata.data
+        test = introductionA.intro(data['traintime'], data['trainprice'], "simpleplot")
         test.plot
-        """.format(datafile)
+        """.format(crypto, timeint, from_, to)
         )
 
 regression_text = """\
-## test regression predict
+## Polynomial Regression
+
+
 """
 
 regression_code = """\
-3+3
+reg = regression.Regression(data['trainprice'], data['valprice'], data['traintime'], data['valtime'], "poly")
+reg.result
 """
