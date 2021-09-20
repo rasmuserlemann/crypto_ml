@@ -34,13 +34,13 @@ class data:
             now = datetime.now()
             unixnow = int(time.mktime(now.timetuple()))*1000
             if self.time_interval == "hour":
-                to = min(self.end + 86400000, unixnow)
+                to = min(self.end + 10800000, unixnow)
                 trainend = self.end
             if self.time_interval == "day":
-                to = min(self.end + 604800000, unixnow)
+                to = min(self.end + 259200000, unixnow)
                 trainend = self.end
-            #86400000 is equal to 1 day
-            #604800000 is equal to 7 days
+            #10800000 is equal to 3 hours
+            #259200000 is equal to 7 days
             #valvar is the length of the validation period
 
             from_ = self.start
@@ -64,7 +64,7 @@ class data:
 
 
 
-
+'''
 test = data('X:BTCUSD', 'hour', 1631646542000, 1631738736000, "simpledata")
 T = test.data
-
+'''

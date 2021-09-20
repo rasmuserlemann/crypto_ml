@@ -1,22 +1,29 @@
 import nbformat as nbf
 import os
 import time
+from datetime import datetime
+
 import sys
 import uuid
 import modules.ConstructJupyterNotebook as Jup
 from nbconvert.preprocessors import ExecutePreprocessor
 
-#For testing, use the command: py main.py 'X:BTCUSD' 'hour' 1630454400000 1631577600000
+#For testing, use the command: py main.py 'X:BTCUSD' 'hour' 1631646542000 1631738736000
 #Train on 2021 1. Sept to 14. Sept
 
 #Read in data location as an argument in terminal
 crypto, timeint, from_, to = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 
+#Text variables
+if crypto == "'X:BTCUSD'": cryptoname = "Bitcoin (BTC)"
+starttime = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(int(from_)/1000))
+endtime = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(int(to)/1000))
+
 nb = nbf.v4.new_notebook()
 
 #Combine jupyter notebook text and code cells
 nb['cells'] = [
-               nbf.v4.new_markdown_cell(Jup.introduction_text), nbf.v4.new_code_cell(Jup.introduction_code(crypto, timeint, from_, to)),
+               nbf.v4.new_markdown_cell(Jup.introduction_text(cryptoname, starttime, endtime)), nbf.v4.new_code_cell(Jup.introduction_code(crypto, timeint, from_, to)),
                nbf.v4.new_markdown_cell(Jup.regression_text), nbf.v4.new_code_cell(Jup.regression_code)
                ]
 

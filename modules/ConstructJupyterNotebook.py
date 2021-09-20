@@ -2,9 +2,14 @@ import nbformat as nbf
 import os
 import sys
 
-introduction_text = """\
+def introduction_text(crypto, from_, to):
+    return(
+        """\
 ## Introduction
-"""
+
+This report will analyze {} data from the starting time of {} to the end time of {}. First we will plot the price data from the starting time to the end time.
+        """.format(crypto, from_, to)
+        )
 
 def introduction_code(crypto, timeint, from_, to):
     return(
@@ -30,7 +35,7 @@ def introduction_code(crypto, timeint, from_, to):
 
 regression_text = """\
 ## Polynomial Regression
-
+Polynomial regression is a classical supervised approach for predicting price. It fits a nonlinear line between the relationship of features (time, ...) and price.
 
 """
 
