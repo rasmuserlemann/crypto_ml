@@ -8,15 +8,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from polygon import RESTClient
+from polygon.rest import RESTClient
 import time
 from datetime import datetime
 
 class data:
-    def __init__(self, crypto0, time_interval0, start0, end0, method0):
+    def __init__(self, crypto0, time_interval0, start0, method0):
         self.method = method0
         self.start = start0
-        self.end = end0
         self.crypto = crypto0
         self.time_interval = time_interval0
 
@@ -27,28 +26,26 @@ class data:
         with RESTClient(apikey) as client:
             ticker = self.crypto
             multiplier = 1
-            timespan = self.time_interval
 
-            #Take the end data and add 1 day or 7 days (depending on the time interval)
-            #The extra 1 day or 7 days will be used to validate the results
             now = datetime.now()
             unixnow = int(time.mktime(now.timetuple()))*1000
+
             if self.time_interval == "hour":
-                to = min(self.end + 10800000, unixnow)
-                trainend = self.end
+                to = unixnow + 18000000
+                trainend = unixnow
+                valjump = 3600000
             if self.time_interval == "day":
-                to = min(self.end + 259200000, unixnow)
-                trainend = self.end
-            #10800000 is equal to 3 hours
-            #259200000 is equal to 7 days
-            #valvar is the length of the validation period
+                to = unixnow + 432000000
+                trainend = unixnow
+                valjump = 86400000
 
-            from_ = self.start
+            valticks = 5
+            #18000000 is equal to 5 hours and 3600000 1 hour
+            #432000000 is equal to 5 days and 86400000 1 day
 
-            resp = client.crypto_aggregates(ticker, 1, timespan, from_, to)
+            resp = client.crypto_aggregates(ticker=ticker, multiplier=1, timespan=self.time_interval, from_=self.start, to=trainend, sort='asc', limit=50000)
             trainclose = []
             traindate = []
-            valclose = []
             valdate = []
 
             for d in range(len(resp.results)):
@@ -56,15 +53,14 @@ class data:
                 if s < trainend:
                     trainclose.append(resp.results[d]['c'])
                     traindate.append(time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(s/1000.0)))
-                if s >= trainend:
-                    valclose.append(resp.results[d]['c'])
-                    valdate.append(time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(s/1000.0)))
+            for el in range(1,valticks+1):
+                timemoment = unixnow + valjump*el
+                valdate.append(time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(timemoment/1000.0)))
                 #Divide by 1000 as the function doesn't want milliseconds
-            return({"traintime": traindate, "valtime": valdate, "trainprice": trainclose, "valprice": valclose})
-
+            return({"traintime": traindate, "valtime": valdate, "trainprice": trainclose})
 
 
 '''
-test = data('X:BTCUSD', 'hour', 1631646542000, 1631738736000, "simpledata")
+test = data('X:BTCUSD', 'hour', 1631646542000, 1632490300000, "simpledata")
 T = test.data
 '''

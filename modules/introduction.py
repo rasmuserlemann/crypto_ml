@@ -32,5 +32,14 @@ class intro:
         plt.xticks(xaxis, labels, rotation='vertical')
         plt.locator_params(axis = 'x', nbins=min(len(labels), 20))
         plt.legend()
+        plt.show()
+        print(xaxis[-1])
 
+'''
+import dataload as pulldata
+test = pulldata.data('X:BTCUSD', 'hour', 1631310151000, 1631742151000, "simpledata")
+D = test.data
+reg = intro(D['traintime'], D['trainprice'], "simpleplot")
 
+reg.plot
+'''
