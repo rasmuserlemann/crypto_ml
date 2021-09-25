@@ -31,14 +31,8 @@ class nn:
 
     def lstm_(self):
         #Abort if the training period is less than 100 units
-        if len(self.traintime)<100:
+        if len(self.traintime) < param.minsize:
             return("The time period is too short. Training period has to be more than 100 time units")
-
-        #Parameters
-        epochs = param.epochs
-        batch_size = param.batch_size
-        sliding_window = param.sliding_window
-
 
         #enumerate hours/days and define data variables
         xtrain = np.asarray([x for x in range(0,len(self.traindata))])
@@ -52,8 +46,8 @@ class nn:
         #Create the sliding windows
         X_train = []
         y_train = []
-        for i in range(sliding_window, len(training_set_scaled)):
-            X_train.append(training_set_scaled[i-sliding_window:i])
+        for i in range(param.sliding_window, len(training_set_scaled)):
+            X_train.append(training_set_scaled[i-param.sliding_window:i])
             y_train.append(training_set_scaled[i])
         X_train, y_train = np.array(X_train), np.array(y_train)
         X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -78,15 +72,15 @@ class nn:
 
         regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
-        regressor.fit(X_train, y_train, epochs = epochs, batch_size = batch_size, verbose=0)
+        regressor.fit(X_train, y_train, epochs = param.epochs, batch_size = param.batch_size, verbose=0)
 
         #Create the test data set and use the model for predicting 100 hours/days
         inputs_standard = ytrain
         inputs = inputs_standard.reshape(-1,1)
         inputs = sc.transform(inputs)
         X_test = []
-        for i in range(sliding_window,len(ytrain)):
-            X_test.append(inputs[i-sliding_window:i])
+        for i in range(param.sliding_window,len(ytrain)):
+            X_test.append(inputs[i-param.sliding_window:i])
 
         X_test = np.array(X_test)
         X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
@@ -95,14 +89,14 @@ class nn:
 
         #Scale back the training data predicted price
         predicted_price = sc.inverse_transform(predicted_price_scaled)
-        nopred = inputs_standard[0:sliding_window]
+        nopred = inputs_standard[0:param.sliding_window]
         predicted_price = np.insert(predicted_price, 0, nopred)
 
         #Take last sliding window number of elements and do predictions one by one
         lastwindow = X_test[-1:]
-        ytemp = inputs[-sliding_window:]
+        ytemp = inputs[-param.sliding_window:]
         predictions = []
-        for i in range(5):
+        for i in range(param.predlen):
             pred = regressor.predict(lastwindow)
             predictions.append(float(sc.inverse_transform(pred)[0]))
             ytemp = np.delete(ytemp,0)
@@ -114,22 +108,20 @@ class nn:
         #Figure size
         plt.rcParams["figure.figsize"]= param.figsize
         #X-axis for the plot
-        xaxis100 = [x for x in range(100)]
+        xaxis100 = [x for x in range(param.plotlen)]
         #Plot
-        plt.plot(xaxis100, [*predicted_price[-95:], *predictions], color = "red", label = "Predicted Price")
-        plt.plot(xaxis100[0:95], ytrain[-95:], color = "black", label = "Real Price")
-        plt.axvline(x=94, color="blue", label="Prediction Starts")
+        plt.plot(xaxis100, [*predicted_price[-param.trainlen:], *predictions], color = "red", label = "Predicted Price")
+        plt.plot(xaxis100[0:param.trainlen], ytrain[-param.trainlen:], color = "black", label = "Real Price")
+        plt.axvline(x=param.trainlen-1, color="blue", label="Prediction Starts")
         #Change the x axis to time ticks
         labels = self.traintime + self.valtime
-        plt.xticks(xaxis100, labels[-100:], rotation='vertical')
+        plt.xticks(xaxis100, labels[-param.plotlen:], rotation='vertical')
         plt.locator_params(axis = 'x', nbins=min(len(labels), 20))
 
         plt.legend()
         plt.show()
 
-
-
-
+'''
 #Testing
 import dataload as pulldata
 test = pulldata.data('X:BTCUSD', 'day', 1611512638000, "simpledata")
@@ -137,3 +129,4 @@ D = test.data
 lstm = nn(D['trainprice'], D['traintime'], D['valtime'], "lstm")
 
 #lstm.result
+'''

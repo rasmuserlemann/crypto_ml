@@ -26,14 +26,13 @@ class Regression:
         else:
             print("Regression method "+self.method+" Not Available")
     def poly_(self):
-        print(self.valtime)
         #enumerate hours/days
         xtrain = np.asarray([x for x in range(0,len(self.traindata))])
         ytrain = self.traindata
         xval = np.asarray([x for x in range(max(xtrain)+1,len(self.traindata) + len(self.valtime))])
 
         regression_model = LinearRegression()
-        poly = PolynomialFeatures(degree = degree)
+        poly = PolynomialFeatures(degree = param.degree)
         xtrain_transform = poly.fit_transform(xtrain.reshape(-1, 1))
         xval_transform = poly.fit_transform(xval.reshape(-1, 1))
         regression_model.fit(xtrain_transform, np.asarray(ytrain).reshape(-1, 1))
@@ -61,7 +60,7 @@ class Regression:
         plt.legend()
         plt.show()
 
-
+'''
 #Testing
 import dataload as pulldata
 test = pulldata.data('X:BTCUSD', 'hour', 1631310151000, "simpledata")
@@ -69,3 +68,4 @@ D = test.data
 reg = Regression(D['trainprice'], D['traintime'], D['valtime'], "poly")
 
 reg.result
+'''

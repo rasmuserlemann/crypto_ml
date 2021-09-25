@@ -45,6 +45,7 @@ os.mkdir(folder_name)
 os.mkdir(folder_name + '\\src')
 os.mkdir(folder_name + '\\src\\modules')
 os.system('copy modules\\introduction.py ' + folder_name + '\\src\\modules')
+os.system('copy modules\\parameters.py ' + folder_name + '\\src\\modules')
 os.system('copy modules\\regression.py ' + folder_name + '\\src\\modules')
 os.system('copy modules\\neural.py ' + folder_name + '\\src\\modules')
 
