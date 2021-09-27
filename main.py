@@ -12,7 +12,7 @@ from auth import check
 import time
 from datetime import datetime
 
-#For testing, use the command: py main.py 'X:BTCUSD' 'day' 1609477200000
+#For testing, use the command: py main.py 'X:BTCUSD' 'day' 1609477200000 123456
 
 #Read in data location as an argument in terminal
 crypto, timeint, from_, code= sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
