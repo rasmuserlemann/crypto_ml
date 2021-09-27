@@ -12,7 +12,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.layers import Dropout
-import parameters as param
+import modules.parameters as param
 
 #skikit Libraries
 

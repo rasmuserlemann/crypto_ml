@@ -7,6 +7,7 @@ import sys
 import uuid
 import modules.ConstructJupyterNotebook as Jup
 from nbconvert.preprocessors import ExecutePreprocessor
+from auth import check
 
 import time
 from datetime import datetime
@@ -14,7 +15,11 @@ from datetime import datetime
 #For testing, use the command: py main.py 'X:BTCUSD' 'day' 1609477200000
 
 #Read in data location as an argument in terminal
-crypto, timeint, from_ = sys.argv[1], sys.argv[2], sys.argv[3]
+crypto, timeint, from_, code= sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+
+#If the authorization code is not correct, exit the script
+if code == False:
+    exit()
 
 #Current time in unix timestamp (milliseconds)
 now = datetime.now()
