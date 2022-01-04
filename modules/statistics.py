@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.stattools import adfuller
 
 import modules.parameters as param
 
@@ -28,48 +29,50 @@ class Statistics:
     def arima_(self):
         #enumerate hours/days
         xtrain = np.asarray([x for x in range(0,len(self.traindata))])
-        ytrain = self.traindata
+        ytrain = pd.DataFrame(self.traindata)
         xval = np.asarray([x for x in range(max(xtrain)+1,len(self.traindata) + len(self.valtime))])
+        rmean = ytrain.rolling(window=12).mean()
+        #Make the time series stationary
+        datastationary = ytrain-rmean
 
-        model = ARIMA(series, order=(5,1,0))
-        model_fit = model.fit()
+        #P-value to check if the time series is stationary
+        if adfuller(datastationary.dropna())[1] > 0.05:
+            print("Unable to make the time series stationary. Choose different settings.")
 
+        model = ARIMA(datastationary, order=(2,1,2))
+        results = model.fit()
 
-        regression_model = LinearRegression()
-        poly = PolynomialFeatures(degree = param.degree)
-        xtrain_transform = poly.fit_transform(xtrain.reshape(-1, 1))
-        xval_transform = poly.fit_transform(xval.reshape(-1, 1))
-        regression_model.fit(xtrain_transform, np.asarray(ytrain).reshape(-1, 1))
+        #Generate the predictions
+        m = rmean[0].iloc[-1]
+        yhat = results.forecast(steps=param.predlen)
+        predictions = yhat+m
 
-        #Predict the training data prices and the validation data prices
-        ytrain_learned = regression_model.predict(xtrain_transform)
-        yval_learned = regression_model.predict(xval_transform)
+        #PD dataframe back to a list
+        ytrain = ytrain[0].values.tolist()
+        ytrain_pred = results.fittedvalues+rmean
+        ytrain_pred = ytrain_pred[0].values.tolist()
 
-        #Time interval for plotting is 100
-        plotwin = 100
-
-        #list of lists into list of integers
-        ytrain_learned = [x[0] for x in ytrain_learned]
-        yval_learned = [x[0] for x in yval_learned]
         #Fix the image size
         plt.rcParams["figure.figsize"]= param.figsize
-        plt.plot([*xtrain, *xval][-plotwin:], [*ytrain_learned, *yval_learned][-plotwin:], color="red", label = "Predictied Price")
+        plt.plot([*xtrain, *xval][-param.plotlen:], [*ytrain_pred, *predictions][-param.plotlen:], color="red", label = "Predictied Price")
 
-        plt.plot(xtrain[-plotwin:], ytrain[-plotwin:], color = "black", label = "Real Price")
+        plt.plot(xtrain[-param.plotlen:], ytrain[-param.plotlen:], color = "black", label = "Real Price")
 
         labels = self.traintime + self.valtime
         plt.axvline(x=len(xtrain)-1, color="blue", label="Prediction Starts")
-        plt.xticks([*xtrain, *xval][-plotwin:], labels[-plotwin:], rotation='vertical')
+        plt.xticks([*xtrain, *xval][-param.plotlen:], labels[-param.plotlen:], rotation='vertical')
         plt.locator_params(axis = 'x', nbins=min(len(labels), 20))
         plt.legend()
         plt.show()
 
 '''
 #Testing
+import parameters as param
+
 import dataload as pulldata
 test = pulldata.data('X:BTCUSD', 'hour', 1631310151000, "simpledata")
 D = test.data
-reg = Regression(D['trainprice'], D['traintime'], D['valtime'], "poly")
+reg = Statistics(D['trainprice'], D['traintime'], D['valtime'], "arima")
 
 reg.result
 '''

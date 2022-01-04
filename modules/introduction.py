@@ -33,7 +33,6 @@ class intro:
         plt.locator_params(axis = 'x', nbins=min(len(labels), 20))
         plt.legend()
         plt.show()
-        print(xaxis[-1])
 
 '''
 import dataload as pulldata

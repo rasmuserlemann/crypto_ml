@@ -41,21 +41,18 @@ class Regression:
         ytrain_learned = regression_model.predict(xtrain_transform)
         yval_learned = regression_model.predict(xval_transform)
 
-        #Time interval for plotting is 100
-        plotwin = 100
-
         #list of lists into list of integers
         ytrain_learned = [x[0] for x in ytrain_learned]
         yval_learned = [x[0] for x in yval_learned]
         #Fix the image size
         plt.rcParams["figure.figsize"]= param.figsize
-        plt.plot([*xtrain, *xval][-plotwin:], [*ytrain_learned, *yval_learned][-plotwin:], color="red", label = "Predictied Price")
+        plt.plot([*xtrain, *xval][-param.plotlen:], [*ytrain_learned, *yval_learned][-param.plotlen:], color="red", label = "Predictied Price")
 
-        plt.plot(xtrain[-plotwin:], ytrain[-plotwin:], color = "black", label = "Real Price")
+        plt.plot(xtrain[-param.plotlen:], ytrain[-param.plotlen:], color = "black", label = "Real Price")
 
         labels = self.traintime + self.valtime
         plt.axvline(x=len(xtrain)-1, color="blue", label="Prediction Starts")
-        plt.xticks([*xtrain, *xval][-plotwin:], labels[-plotwin:], rotation='vertical')
+        plt.xticks([*xtrain, *xval][-param.plotlen:], labels[-param.plotlen:], rotation='vertical')
         plt.locator_params(axis = 'x', nbins=min(len(labels), 20))
         plt.legend()
         plt.show()

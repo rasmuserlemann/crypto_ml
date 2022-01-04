@@ -23,6 +23,9 @@ class data:
             self.data = self.polygonAPI()
     def polygonAPI(self):
         apikey = "lZfT8HmZUt6dTWHbSM44V477wvU7JHCC"
+
+        predlen = 5
+
         with RESTClient(apikey) as client:
             ticker = self.crypto
             multiplier = 1
@@ -31,15 +34,15 @@ class data:
             unixnow = int(time.mktime(now.timetuple()))*1000
 
             if self.time_interval == "hour":
-                to = unixnow + 18000000
-                trainend = unixnow
                 valjump = 3600000
-            if self.time_interval == "day":
-                to = unixnow + 432000000
+                to = unixnow + 18000000 + valjump*predlen
                 trainend = unixnow
+            if self.time_interval == "day":
                 valjump = 86400000
+                to = unixnow + valjump*predlen
+                trainend = unixnow
 
-            valticks = 5
+            valticks = predlen
             #18000000 is equal to 5 hours and 3600000 1 hour
             #432000000 is equal to 5 days and 86400000 1 day
 

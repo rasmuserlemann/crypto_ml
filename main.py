@@ -39,7 +39,9 @@ nb = nbf.v4.new_notebook()
 nb['cells'] = [
                nbf.v4.new_markdown_cell(Jup.introduction_text(cryptoname, starttime, endtime)), nbf.v4.new_code_cell(Jup.introduction_code(crypto, timeint, from_)),
                nbf.v4.new_markdown_cell(Jup.nn_text), nbf.v4.new_code_cell(Jup.nn_code),
-               nbf.v4.new_markdown_cell(Jup.regression_text), nbf.v4.new_code_cell(Jup.regression_code)
+               nbf.v4.new_markdown_cell(Jup.regression_text),
+                nbf.v4.new_code_cell(Jup.regression_code),
+               nbf.v4.new_markdown_cell(Jup.stat_text), nbf.v4.new_code_cell(Jup.stat_code),
                ]
 
 #New folder with a unique name
