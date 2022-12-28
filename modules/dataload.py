@@ -22,7 +22,7 @@ class data:
         if (self.method == "simpledata"):
             self.data = self.polygonAPI()
     def polygonAPI(self):
-        apikey = "lZfT8HmZUt6dTWHbSM44V477wvU7JHCC"
+        apikey = "APIKEY"
 
         predlen = 5
 
